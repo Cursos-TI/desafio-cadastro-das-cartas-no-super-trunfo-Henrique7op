@@ -64,8 +64,6 @@ int main() {
 
     return 0;
 }
-criei o print f
-
 #include <stdio.h>
 #include <string.h>
 
