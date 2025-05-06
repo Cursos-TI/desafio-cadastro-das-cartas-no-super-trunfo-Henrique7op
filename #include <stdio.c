@@ -162,3 +162,123 @@ int main() {
 
     return winner.nome[0] ? 0 : 1; // Retorna 0 se sucesso, 1 se escolha inválida
 }
+
+#include <stdio.h>
+#include <string.h>
+
+// Define a structure to represent a city card
+typedef struct {
+    char estado[10];
+    char codigo[10];
+    char nome[50];
+    long populacao;
+    double area;
+    double pib;
+    int pontos_turisticos;
+    double pib_per_capita;
+    double densidade_pop;
+    char super_poder[50];  // Novo campo: super poder da cidade
+    int valor_poder;       // Valor numérico do super poder (para comparação)
+} CityCard;
+
+// Function to compare two cities based on the selected attribute
+CityCard compare_cities(CityCard city1, CityCard city2, int attribute) {
+    // Use an array to store the comparison results
+    int comparison_results[] = {
+        city1.populacao > city2.populacao,
+        city1.area > city2.area,
+        city1.pib > city2.pib,
+        city1.pontos_turisticos > city2.pontos_turisticos,
+        city1.pib_per_capita > city2.pib_per_capita,
+        city1.densidade_pop > city2.densidade_pop,
+        city1.valor_poder > city2.valor_poder  // Novo atributo: super poder
+    };
+
+    // Array de mensagens de atributos
+    char* atributos[] = {
+        "População",
+        "Área",
+        "PIB",
+        "Pontos Turísticos",
+        "PIB per capita",
+        "Densidade populacional",
+        "Super Poder"
+    };
+
+    // Validar a escolha
+    int valid_choice = (choice > 0 && choice < 8);
+    printf("%s", valid_choice ? "" : "Escolha inválida. Use um número entre 1 e 7.\n");
+
+    // Mostrar comparação específica
+    printf("\nComparando %s:\n", atributos[attribute-1]);
+    printf("%s: %s (%d) vs %s: %s (%d)\n", 
+           city1.nome, city1.super_poder, city1.valor_poder,
+           city2.nome, city2.super_poder, city2.valor_poder);
+
+    return valid_choice ? (comparison_results[attribute - 1] ? city1 : city2) : (CityCard){0};
+}
+
+int main() {
+    // Create the city cards com super poderes
+    CityCard sao_paulo = {"A", "A01", "São Paulo", 12325000, 1521.11, 699.28, 50};
+    CityCard rio_de_janeiro = {"B", "B02", "Rio de Janeiro", 6748000, 1200.25, 300.50, 30};
+    
+    // Adicionando super poderes e valores
+    strcpy(sao_paulo.super_poder, "Capital Financeira");
+    sao_paulo.valor_poder = 90;
+    strcpy(rio_de_janeiro.super_poder, "Cidade Maravilhosa");
+    rio_de_janeiro.valor_poder = 85;
+    
+    // Calcular PIB per capita e densidade populacional
+    sao_paulo.pib_per_capita = sao_paulo.pib * 1e9 / sao_paulo.populacao;
+    sao_paulo.densidade_pop = sao_paulo.populacao / sao_paulo.area;
+    
+    rio_de_janeiro.pib_per_capita = rio_de_janeiro.pib * 1e9 / rio_de_janeiro.populacao;
+    rio_de_janeiro.densidade_pop = rio_de_janeiro.populacao / rio_de_janeiro.area;
+
+    int choice;
+    printf("Bem-vindo ao Super Trunfo de Cidades!\n");
+    printf("Escolha uma característica para comparar:\n");
+    printf("1. População\n");
+    printf("2. Área\n");
+    printf("3. PIB\n");
+    printf("4. Pontos Turísticos\n");
+    printf("5. PIB per capita\n");
+    printf("6. Densidade populacional\n");
+    printf("7. Super Poder\n");  // Nova opção
+    printf("Digite o número da característica (1-7): ");
+    scanf("%d", &choice);
+
+    // Compare the cities based on the selected attribute
+    CityCard winner = compare_cities(sao_paulo, rio_de_janeiro, choice);
+
+    // Exibir resultados detalhados
+    printf("\n=== DETALHES DAS CARTAS ===\n");
+    
+    // Carta São Paulo
+    printf("\nCarta 1: %s (%s)\n", sao_paulo.nome, sao_paulo.estado);
+    printf("- População: %ld\n", sao_paulo.populacao);
+    printf("- Área: %.2f km²\n", sao_paulo.area);
+    printf("- PIB: %.2f bilhões\n", sao_paulo.pib);
+    printf("- Pontos Turísticos: %d\n", sao_paulo.pontos_turisticos);
+    printf("- PIB per capita: %.2f\n", sao_paulo.pib_per_capita);
+    printf("- Densidade populacional: %.2f hab/km²\n", sao_paulo.densidade_pop);
+    printf("- Super Poder: %s (%d pontos)\n", sao_paulo.super_poder, sao_paulo.valor_poder);
+    
+    // Carta Rio de Janeiro
+    printf("\nCarta 2: %s (%s)\n", rio_de_janeiro.nome, rio_de_janeiro.estado);
+    printf("- População: %ld\n", rio_de_janeiro.populacao);
+    printf("- Área: %.2f km²\n", rio_de_janeiro.area);
+    printf("- PIB: %.2f bilhões\n", rio_de_janeiro.pib);
+    printf("- Pontos Turísticos: %d\n", rio_de_janeiro.pontos_turisticos);
+    printf("- PIB per capita: %.2f\n", rio_de_janeiro.pib_per_capita);
+    printf("- Densidade populacional: %.2f hab/km²\n", rio_de_janeiro.densidade_pop);
+    printf("- Super Poder: %s (%d pontos)\n", rio_de_janeiro.super_poder, rio_de_janeiro.valor_poder);
+    
+    // Resultado final
+    printf("\n=== RESULTADO ===\n");
+    printf("%s", winner.nome[0] ? "A cidade vencedora é: " : "");
+    printf("%s%s", winner.nome, winner.nome[0] ? "!\n" : "");
+
+    return winner.nome[0] ? 0 : 1;
+}
